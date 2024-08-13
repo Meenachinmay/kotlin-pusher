@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class PusherConfig {
-    @Value("\${pusher.appId}")
+    @Value("\${pusher.app-id}")
     private lateinit var appId: String
 
-    @Value("\${pusher.key}")
+    @Value("\${pusher.app-key}")
     private lateinit var key: String
 
-    @Value("\${pusher.secret}")
+    @Value("\${pusher.app-secret}")
     private lateinit var secret: String
 
     @Value("\${pusher.cluster}")

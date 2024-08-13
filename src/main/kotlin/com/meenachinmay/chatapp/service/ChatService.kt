@@ -1,5 +1,6 @@
 package com.meenachinmay.chatapp.service
 
+import com.meenachinmay.chatapp.model.Message
 import com.meenachinmay.chatapp.model.User
 import com.pusher.rest.Pusher
 import org.springframework.stereotype.Service
@@ -13,22 +14,27 @@ class ChatService(private val pusher: Pusher) {
     private val users = ConcurrentHashMap<String, User>()
 
     fun addUser(user: User): User {
-        users[user.id] = user
+        users[user.name] = user
         logger.info("User added: $user")
         pusher.trigger("new-login", "user-connected", user)
-        logger.info("Pusher event triggered: user-connected for ${user.id}")
         return user
     }
 
     fun removeUser(user: User) {
-        users.remove(user.id)
+        users.remove(user.name)
         logger.info("User removed: $user")
         pusher.trigger("new-login", "user-disconnected", user)
-        logger.info("Pusher event triggered: user-disconnected for ${user.id}")
     }
 
     fun getUsers(): List<User> {
         logger.info("Fetching all users. Current count: ${users.size}")
         return users.values.toList()
     }
+
+    fun sendMessage(message: Message) {
+        logger.info("Sending message: $message")
+        val channelName = "private-chat-${message.to}"
+        pusher.trigger(channelName, "new-message", message)
+    }
+
 }
