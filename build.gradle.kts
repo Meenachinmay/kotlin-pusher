@@ -35,9 +35,13 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+	testImplementation("io.mockk:mockk:1.12.0")
+	testImplementation(kotlin("test"))
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
