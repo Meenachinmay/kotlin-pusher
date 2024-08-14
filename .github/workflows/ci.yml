@@ -24,16 +24,20 @@ jobs:
 
       - name: Set up application.properties for testing
         run: |
-          echo "pusher.app-id=${{ secrets.PUSHER_APP_ID }}" >> src/main/resources/application-test.yml
-          echo "pusher.key=${{ secrets.PUSHER_KEY }}" >> src/main/resources/application-test.yml
-          echo "pusher.secret=${{ secrets.PUSHER_SECRET }}" >> src/main/resources/application-test.yml
-          echo "pusher.cluster=${{ secrets.PUSHER_CLUSTER }}" >> src/main/resources/application-test.yml
+          echo "pusher.app-id=${{ secrets.PUSHER_APP_ID }}" >> src/test/resources/application-test.properties
+          echo "pusher.key=${{ secrets.PUSHER_KEY }}" >> src/test/resources/application-test.properties
+          echo "pusher.secret=${{ secrets.PUSHER_SECRET }}" >> src/test/resources/application-test.properties
+          echo "pusher.cluster=${{ secrets.PUSHER_CLUSTER }}" >> src/test/resources/application-test.properties
+          echo "spring.profiles.active=test" >> src/test/resources/application-test.properties
+
+      - name: Print test configuration
+        run: cat src/test/resources/application-test.properties
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --info
 
-      - name: Run tests
-        run: ./gradlew test
+      - name: Run tests with debug output
+        run: ./gradlew test --debug
         env:
           SPRING_PROFILES_ACTIVE: test
 
