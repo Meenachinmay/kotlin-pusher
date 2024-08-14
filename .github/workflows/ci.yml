@@ -24,10 +24,10 @@ jobs:
 
       - name: Set up application.properties for testing
         run: |
-          echo "pusher.app-id=${{ secrets.PUSHER_APP_ID }}" >> src/main/resources/application-test.properties
-          echo "pusher.key=${{ secrets.PUSHER_KEY }}" >> src/main/resources/application-test.properties
-          echo "pusher.secret=${{ secrets.PUSHER_SECRET }}" >> src/main/resources/application-test.properties
-          echo "pusher.cluster=${{ secrets.PUSHER_CLUSTER }}" >> src/main/resources/application-test.properties
+          echo "pusher.app-id=${{ secrets.PUSHER_APP_ID }}" >> src/main/resources/application-test.yml
+          echo "pusher.key=${{ secrets.PUSHER_KEY }}" >> src/main/resources/application-test.yml
+          echo "pusher.secret=${{ secrets.PUSHER_SECRET }}" >> src/main/resources/application-test.yml
+          echo "pusher.cluster=${{ secrets.PUSHER_CLUSTER }}" >> src/main/resources/application-test.yml
 
       - name: Build with Gradle
         run: ./gradlew build

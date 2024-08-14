@@ -1,0 +1,4 @@
+pusher.app-id=${pusher.app-id}
+pusher.key=${pusher.key}
+pusher.secret=${pusher.secret}
+pusher.cluster=${pusher.cluster}

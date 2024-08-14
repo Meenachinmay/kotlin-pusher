@@ -1,14 +1,11 @@
 package com.meenachinmay.chatapp
 
-import com.meenachinmay.chatapp.controller.PusherController
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
@@ -16,13 +13,7 @@ import org.springframework.web.reactive.function.BodyInserters
 @SpringBootTest
 @AutoConfigureWebTestClient
 class PusherControllerTests {
-//    @BeforeEach
-//    fun setup() {
-//        pusherController = PusherController()
-//        ReflectionTestUtils.setField(pusherController, "appKey", "test-app-key")
-//        ReflectionTestUtils.setField(pusherController, "appSecret", "test-app-secret")
-//        webTestClient = WebTestClient.bindToController(pusherController).build()
-//    }
+
     @Autowired
     private lateinit var webTestClient: WebTestClient
 
