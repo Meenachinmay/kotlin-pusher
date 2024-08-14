@@ -59,4 +59,19 @@ class PusherControllerTests {
             .expectBody(String::class.java)
             .isEqualTo("Missing socket_id")
     }
+
+    @Test
+    fun `authenticatePusherUser should return bad request when channel_name is missing` (): Unit = runBlocking {
+        val formData = LinkedMultiValueMap<String, String>()
+        formData.add("socket_id", "123.123")
+
+        webTestClient.post()
+            .uri("/pusher/auth")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .body(BodyInserters.fromFormData(formData))
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody(String::class.java)
+            .isEqualTo("Missing channel_name")
+    }
 }
