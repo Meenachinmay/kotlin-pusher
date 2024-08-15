@@ -4,15 +4,13 @@ import com.meenachinmay.chatapp.controller.ChatController
 import com.meenachinmay.chatapp.model.Message
 import com.meenachinmay.chatapp.model.User
 import com.meenachinmay.chatapp.service.ChatService
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import com.pusher.rest.Pusher
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBodyList
-
 
 @SpringBootTest
 class ChatControllerTests {
@@ -23,15 +21,15 @@ class ChatControllerTests {
 
     @BeforeEach
     fun setup() {
-        chatService = mockk()
+        val pusher = mockk<Pusher>(relaxed = true)
+        chatService = ChatService(pusher)
         chatController = ChatController(chatService)
         webTestClient = WebTestClient.bindToController(chatController).build()
     }
 
     @Test
-    fun `join chat should add user and return a user` () {
+    fun `join chat should add user and return a user`() {
         val user = User("TestUser")
-        every { chatService.addUser(any()) } returns user
 
         webTestClient.post().uri("/api/chat/join")
             .bodyValue(user)
@@ -40,27 +38,26 @@ class ChatControllerTests {
             .expectBody(User::class.java)
             .isEqualTo(user)
 
-        verify { chatService.addUser(user) }
+        assert(chatService.users.containsKey("TestUser"))
     }
 
     @Test
-    fun `leave chat should remove the user`  () {
+    fun `leave chat should remove the user`() {
         val user = User("TestUser")
-        every { chatService.removeUser(any()) } returns Unit
+        chatService.addUser(user)
 
         webTestClient.post().uri("/api/chat/leave")
             .bodyValue(user)
             .exchange()
             .expectStatus().isOk
 
-        verify { chatService.removeUser(user) }
-
+        assert(!chatService.users.containsKey("TestUser"))
     }
 
     @Test
     fun `getUsers should return list of users`() {
-        val users = listOf(User("User1"), User("User2"))
-        every { chatService.getUsers() } returns users
+        chatService.addUser(User("User1"))
+        chatService.addUser(User("User2"))
 
         webTestClient.get()
             .uri("/api/chat/users")
@@ -70,14 +67,16 @@ class ChatControllerTests {
             .hasSize(2)
             .contains(User("User1"))
             .contains(User("User2"))
-
-        verify { chatService.getUsers() }
     }
 
     @Test
     fun `sendMessage should call chatService`() {
         val message = Message("Hello", "User2", "User1")
-        every { chatService.sendMessage(any()) } returns Unit
+        val pusher = mockk<Pusher>(relaxed = true)
+        val spyService = spyk(chatService)
+
+        chatController = ChatController(spyService)
+        webTestClient = WebTestClient.bindToController(chatController).build()
 
         webTestClient.post()
             .uri("/api/chat/messages")
@@ -85,7 +84,6 @@ class ChatControllerTests {
             .exchange()
             .expectStatus().isOk
 
-        verify { chatService.sendMessage(message) }
+        verify { spyService.sendMessage(message) }
     }
-
 }

@@ -42,6 +42,10 @@ dependencies {
 	testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 	testImplementation("io.mockk:mockk:1.12.0")
 	testImplementation(kotlin("test"))
+//	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+//		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+//	}
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -53,4 +57,7 @@ kotlin {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	testLogging {
+		events("passed", "skipped", "failed")
+	}
 }

@@ -1,24 +1,69 @@
 package com.meenachinmay.chatapp
 
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.env.Environment
 import org.springframework.http.MediaType
-import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 
-@SpringBootTest
+@SpringBootTest(
+    classes = [ChatappApplication::class],
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
 @AutoConfigureWebTestClient
-class PusherControllerTests {
+@ActiveProfiles("test")
+class PusherControllerTests : ApplicationContextAware {
+
+    private lateinit var applicationContext: ApplicationContext
 
     @Autowired
     private lateinit var webTestClient: WebTestClient
 
+    @Autowired
+    private lateinit var env: Environment
+
+    override fun setApplicationContext(applicationContext: ApplicationContext) {
+        this.applicationContext = applicationContext
+    }
+
+//    @BeforeEach
+//    fun setup() {
+//        println("PusherControllerTests setup started")
+//        if (::applicationContext.isInitialized) {
+//            println("ApplicationContext is initialized")
+//            println("Active profiles: ${env.activeProfiles.joinToString()}")
+//            println("Pusher app ID: ${env.getProperty("pusher.app-id")}")
+//            println("Pusher key: ${env.getProperty("pusher.key")}")
+//            println("Pusher cluster: ${env.getProperty("pusher.cluster")}")
+//            println("Beans found in ApplicationContext:")
+//            applicationContext.beanDefinitionNames.forEach { println(it) }
+//        } else {
+//            println("ApplicationContext is not initialized")
+//        }
+//        println("WebTestClient null? ${!::webTestClient.isInitialized}")
+//        println("PusherControllerTests setup completed")
+//    }
+
     @Test
-    fun `authenticatePusherUser should return valid auth response` (): Unit = runBlocking {
+    fun contextLoads() {
+        println("contextLoads test started")
+        assert(::applicationContext.isInitialized) { "ApplicationContext should be initialized" }
+        assert(applicationContext.beanDefinitionNames.isNotEmpty()) { "ApplicationContext should have beans" }
+        assert(env.getProperty("pusher.app-id") != null) { "Pusher app ID should be set" }
+        println("contextLoads test completed")
+    }
+
+    @Test
+    fun `authenticatePusherUser should return valid auth response`(): Unit = runBlocking {
         val formData = LinkedMultiValueMap<String, String>()
         formData.add("socket_id", "123.123")
         formData.add("channel_name", "private-chat-testuser")
@@ -37,7 +82,7 @@ class PusherControllerTests {
     }
 
     @Test
-    fun `authenticatePusherUser should return bad request when socket_id is missing` (): Unit = runBlocking {
+    fun `authenticatePusherUser should return bad request when socket_id is missing`(): Unit = runBlocking {
         val formData = LinkedMultiValueMap<String, String>()
         formData.add("channel_name", "private-chat-testuser")
 
@@ -52,7 +97,7 @@ class PusherControllerTests {
     }
 
     @Test
-    fun `authenticatePusherUser should return bad request when channel_name is missing` (): Unit = runBlocking {
+    fun `authenticatePusherUser should return bad request when channel_name is missing`(): Unit = runBlocking {
         val formData = LinkedMultiValueMap<String, String>()
         formData.add("socket_id", "123.123")
 
