@@ -35,24 +35,6 @@ class PusherControllerTests : ApplicationContextAware {
         this.applicationContext = applicationContext
     }
 
-//    @BeforeEach
-//    fun setup() {
-//        println("PusherControllerTests setup started")
-//        if (::applicationContext.isInitialized) {
-//            println("ApplicationContext is initialized")
-//            println("Active profiles: ${env.activeProfiles.joinToString()}")
-//            println("Pusher app ID: ${env.getProperty("pusher.app-id")}")
-//            println("Pusher key: ${env.getProperty("pusher.key")}")
-//            println("Pusher cluster: ${env.getProperty("pusher.cluster")}")
-//            println("Beans found in ApplicationContext:")
-//            applicationContext.beanDefinitionNames.forEach { println(it) }
-//        } else {
-//            println("ApplicationContext is not initialized")
-//        }
-//        println("WebTestClient null? ${!::webTestClient.isInitialized}")
-//        println("PusherControllerTests setup completed")
-//    }
-
     @Test
     fun contextLoads() {
         println("contextLoads test started")
